@@ -11,7 +11,7 @@ vitualenv env
 
 # ACTIVATING ENVIRONMENT
 # windows
-.\env\Scripts\activate
+source ./env/Scripts/activate
 # linux / Mac OS
 source env/bin/activate
 
@@ -23,6 +23,10 @@ pip install python-decouple
 django-admin --version
 django-admin startproject main .
 ```
+go to settings.py, make amendments below
+```python
+from decouple import config
+SECRET_KEY = config('SECRET_KEY')
 
 go to terminal
 
