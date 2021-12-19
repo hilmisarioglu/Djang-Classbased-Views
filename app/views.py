@@ -3,7 +3,7 @@ from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from .forms import StudentForm
 from .models import Student
-from django.views.generic import TemplateView , ListView , DetailView , CreateView , UpdateView
+from django.views.generic import TemplateView , ListView , DetailView , CreateView , UpdateView , DeleteView
 from django.urls import reverse_lazy
 # Create your views here.
 
@@ -35,19 +35,8 @@ class StudentUpdateView(UpdateView):
     template_name = 'app/student_update.html'
     success_url = reverse_lazy('list')
     
-
-def student_delete(request, id):
-
-    student = Student.objects.get(id=id)
-
-    if request.method == "POST":
-
-
-        student.delete()
-        return redirect("list")
-
-    context= {
-        "student":student
-    }
-    return render(request, "app/student_delete.html",context)
-
+class StudentDeleteView(DeleteView):
+    model = Student
+    template_name = 'app/student_delete.html'
+    success_url = reverse_lazy('list')
+    pk_url_kwarg = 'id'

@@ -20,3 +20,6 @@ class Student(models.Model):
 
     def __str__(self):
         return f"{self.number} {self.first_name} {self.last_name}"
+    
+    class Meta:
+        ordering = ['-id']
