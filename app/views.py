@@ -1,69 +1,40 @@
 from django.shortcuts import render
-
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from .forms import StudentForm
 from .models import Student
+from django.views.generic import TemplateView , ListView , DetailView , CreateView , UpdateView
+from django.urls import reverse_lazy
 # Create your views here.
 
-def home(request):
-    return render(request, "app/home.html")
+class HomeView(TemplateView):
+    template_name = "app/home.html"
 
+class StudentListView(ListView):
+    model = Student
+    # default template name : # app/modelname_list.html
+    # this fits our template name no need to use this time
+    # template_name = "app/student_list.html"
+    context_object_name = 'students' # default context name : object_list
+    paginate_by = 10
 
-def student_list(request):
+class StudentDetailView(DetailView):
+    model = Student
+    pk_url_kwarg = 'id'
 
-    students = Student.objects.all()
+class StudentCreateView(CreateView):
+    model = Student
+    form_class = StudentForm
+    template_name = 'app/student_add.html'
+    success_url = reverse_lazy('list')
 
-    context = {
-        "students":students
-    }
-
-    return render(request, "app/student_list.html", context)
-
-def student_add(request):
-    form = StudentForm()
-
-    if request.method == "POST":
-        form = StudentForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            return redirect("list")
-
-
-    context = {
-
-       "form":form
-    }
-
-    return render(request, "app/student_add.html", context)
-
-def student_detail(request,id):
-    student = Student.objects.get(id=id)
-    context = {
-        "student":student
-    }
-
-    return render(request, "app/student_detail.html", context)
-
-def student_update(request, id):
-
-    student = Student.objects.get(id=id)
-
-    form = StudentForm(instance=student)
-
-    if request.method == "POST":
-        form = StudentForm(request.POST, request.FILES, instance=student)
-        if form.is_valid():
-            form.save()
-            return redirect("list")
-
-    context= {
-
-        "student":student,
-        "form":form
-    }
-
-    return render(request, "app/student_update.html", context)
+class StudentUpdateView(UpdateView):
+    model = Student
+    pk_url_kwarg = 'id'
+    form_class = StudentForm
+    template_name = 'app/student_update.html'
+    success_url = reverse_lazy('list')
+    
 
 def student_delete(request, id):
 
